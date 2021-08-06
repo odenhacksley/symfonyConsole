@@ -8,10 +8,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-//Команда
+//Команда Hello
 class HelloCommand extends Command
 {
-    protected static $defaultName = 'sayHello ';
+    protected static $defaultName = 'say_hello ';
 
     public static function output()
     {
@@ -26,7 +26,7 @@ class HelloCommand extends Command
         $this->addArgument
         (
             'objectToGreet',
-            InputArgument::REQUIRED,
+            InputArgument::IS_ARRAY,
             'Object to say hello'
         );
     }
@@ -34,16 +34,20 @@ class HelloCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            $objectToGreet = $input->getArgument('objectToGreet');
+            $objectToGreet = $this->strFormatter(implode($input->getArgument('objectToGreet')));
             if (empty($objectToGreet)) {
                 throw new InvalidArgumentException();
             }
             $output->writeln('Привет ' . $objectToGreet);
-            return self::SUCCESS;
         } catch (InvalidArgumentException $e) {
             $output->writeln('Вы ввели пустую строку, попробуйте еще раз',);
-            return self::FAILURE;
         }
+        return self::SUCCESS;
+    }
+
+    protected function strFormatter(string|null $string): string|null
+    {
+        return is_null($string) ? null : trim(trim($string, '\''));
     }
 }
 
