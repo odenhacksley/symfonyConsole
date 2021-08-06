@@ -4,6 +4,7 @@ namespace Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -20,25 +21,37 @@ class HelloCommand extends Command
 
     protected function configure(): void
     {   //Description and help
-        $this->setDescription('Says hello');
+        $this->setDescription('outputs the string');
 
         //Required input parameter
         $this->addArgument
         (
-            'objectToGreet',
+            'objectForOutput',
             InputArgument::IS_ARRAY,
-            'Object to say hello'
+            'Object for output'
+        );
+
+        //Not required input option times
+        $this->addOption
+        (
+            'times',
+            't',
+            InputOption::VALUE_OPTIONAL,
+            'times for output',
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
-            $objectToGreet = $this->strFormatter(implode($input->getArgument('objectToGreet')));
-            if (empty($objectToGreet)) {
+            $objectForOutput = $this->strFormatter(implode($input->getArgument('objectForOutput')));
+            $option = $input->getOption('times');
+            if (empty($objectForOutput)) {
                 throw new InvalidArgumentException();
             }
-            $output->writeln('Привет ' . $objectToGreet);
+            for($i = 0; $i < $option; $i++){
+                $output->writeln($objectForOutput);
+            }
         } catch (InvalidArgumentException $e) {
             $output->writeln('Вы ввели пустую строку, попробуйте еще раз',);
         }
