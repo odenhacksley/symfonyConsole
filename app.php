@@ -3,8 +3,8 @@
 require_once 'vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use Commands\HelloCommand;
+use Commands\SayString;
 
 $application = new Application();
-$application->add(new HelloCommand());
+$application->add(new SayString());
 $application->run();
